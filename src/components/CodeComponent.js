@@ -16,6 +16,8 @@ import { BACKEND_API_URL } from '../services/axiosConfig';
 
 export default function CodeComponent({ token, nodeParams, dataTypes, apiToken }) {
   const [deviceType, setDeviceType] = useState('arduino');
+  const [protocolType, setProtocolType] = useState('http');
+  const [dataModelType, setDataModelType] = useState('onem2m');
   const [isCodeVisible, setIsCodeVisible] = useState(true);
 
   const url = `${BACKEND_API_URL}/cin/create/${token}`;
@@ -67,24 +69,26 @@ export default function CodeComponent({ token, nodeParams, dataTypes, apiToken }
     setDeviceType(event.target.value);
   };
 
+  const handleProtocolChange = (event) => {
+    setProtocolType(event.target.value);
+    console.log('Protocol changed to:', event.target.value);
+  };
+
+  const handleDataModelChange = (event) => {
+    setDataModelType(event.target.value);
+    console.log('Data model changed to:', event.target.value);
+  };
+
   return (
     <Grid item xs={12}>
-      {/* Card Component */}
       <Card>
         <CardContent>
-          {/* Title */}
           <Typography variant="h5" gutterBottom>
             Device Code
           </Typography>
 
-          {/* Device Type Selection */}
-          <Grid
-            container
-            spacing={2}
-            sx={{
-              marginBottom: isCodeVisible ? '20px' : '0px'
-            }}>
-            <Grid item xs={12} sm={9} md={9} lg={9}>
+          <Grid container spacing={2} sx={{ marginBottom: isCodeVisible ? '20px' : '0px' }}>
+            <Grid item xs={12} sm={3}>
               <FormControl fullWidth>
                 <InputLabel id="device-select-label">Device Type</InputLabel>
                 <Select
@@ -92,24 +96,49 @@ export default function CodeComponent({ token, nodeParams, dataTypes, apiToken }
                   id="device-select"
                   value={deviceType}
                   label="Device Type"
-                  onChange={handleDeviceChange}>
+                  onChange={handleDeviceChange}
+                >
                   <MenuItem value="arduino">Arduino</MenuItem>
                   <MenuItem value="esp32">ESP32</MenuItem>
                   <MenuItem value="raspberrypi">Raspberry Pi</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={3}
-              md={3}
-              lg={3}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
+            <Grid item xs={12} sm={3}>
+              <FormControl fullWidth>
+                <InputLabel id="protocol-select-label">Protocol</InputLabel>
+                <Select
+                  labelId="protocol-select-label"
+                  id="protocol-select"
+                  value={protocolType}
+                  label="Protocol"
+                  onChange={handleProtocolChange}
+                >
+                  <MenuItem value="http">HTTP</MenuItem>
+                  <MenuItem value="mqtt">MQTT</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <FormControl fullWidth>
+                <InputLabel id="datamodel-select-label">Data Model</InputLabel>
+                <Select
+                  labelId="datamodel-select-label"
+                  id="datamodel-select"
+                  value={dataModelType}
+                  label="Data Model"
+                  onChange={handleDataModelChange}
+                >
+                  <MenuItem value="onem2m">oneM2M</MenuItem>
+                  <MenuItem value="non-onem2m">Non-oneM2M</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={3} sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
               <Button onClick={toggleCodeVisibility} variant="contained" color="primary">
                 {isCodeVisible ? 'Hide Code' : 'Show Code'}
               </Button>
