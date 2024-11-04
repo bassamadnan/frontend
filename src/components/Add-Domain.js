@@ -14,7 +14,7 @@ import Addsensor from './Addsensor';
 import { DataContext } from '../contexts/DataContext';
 
 const steps = ['Domains', 'Sensor Type', 'Node'];
-function Add() {
+function AddDomain() {
   const { fetchAllVerticals, fetchedVerticals } = useContext(DataContext);
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
@@ -148,4 +148,4 @@ function Add() {
   );
 }
 
-export default Add;
+export default AddDomain;

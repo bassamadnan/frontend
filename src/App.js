@@ -14,7 +14,8 @@ import TopBar from './components/TopBar';
 import BulkImport from './components/BulkImport';
 
 // Lazy load other components
-const Add = lazy(() => import('./components/Add-Domain'));
+const AddLandingPage = lazy(() => import('./components/AddLandingPage'));
+const AddDomain = lazy(() => import('./components/Add-Domain'));
 const Vertical = lazy(() => import('./components/Vertical'));
 const Details = lazy(() => import('./components/Details'));
 const Nodedata = lazy(() => import('./components/Nodedata'));
@@ -93,7 +94,10 @@ function App() {
               <Route path="/nodedata/:id" element={<Nodedata />} />
             </Route>
             <Route path="add" element={<PrivateRoute />}>
-              <Route path="/add" element={<Add />} />
+              <Route path="/add" element={<AddLandingPage />} />
+            </Route>
+            <Route path="add-domain" element={<PrivateRoute />}>
+              <Route path="/add-domain" element={<AddDomain />} />
             </Route>
           <Route path="bulk-import" element={<PrivateRoute />}>
             <Route path="/bulk-import" element={<BulkImport />} />
