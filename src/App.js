@@ -14,17 +14,13 @@ import TopBar from './components/TopBar';
 import BulkImport from './components/BulkImport';
 
 // Lazy load other components
-const Add = lazy(() => import('./components/Add'));
+const Add = lazy(() => import('./components/Add-Domain'));
 const Vertical = lazy(() => import('./components/Vertical'));
 const Details = lazy(() => import('./components/Details'));
 const Nodedata = lazy(() => import('./components/Nodedata'));
-const Addnode = lazy(() => import('./components/Addnode'));
-const Addvertical = lazy(() => import('./components/Addvertical'));
-const Addsensor = lazy(() => import('./components/Addsensor'));
 const Login = lazy(() => import('./components/Login'));
 const UserProfile = lazy(() => import('./components/UserProfile'));
 const CreateUser = lazy(() => import('./components/CreateUser'));
-const AddAdvanced = lazy(() => import('./components/AddAdvanced'));
 
 function PrivateRoute() {
   const { isLoggedIn } = useAuth();
@@ -96,20 +92,8 @@ function App() {
               <Route path="/nodedata" element={<Nodedata />} />
               <Route path="/nodedata/:id" element={<Nodedata />} />
             </Route>
-            <Route path="addnode" element={<PrivateRoute />}>
-              <Route path="/addnode" element={<Addnode />} />
-            </Route>
-            <Route path="addvertical" element={<PrivateRoute />}>
-              <Route path="/addvertical" element={<Addvertical />} />
-            </Route>
-            <Route path="addsensor" element={<PrivateRoute />}>
-              <Route path="/addsensor" element={<Addsensor />} />
-            </Route>
             <Route path="add" element={<PrivateRoute />}>
               <Route path="/add" element={<Add />} />
-            </Route>
-            <Route path="add-advanced" element={<PrivateRoute />}>
-              <Route path="/add-advanced" element={<AddAdvanced />} />
             </Route>
           <Route path="bulk-import" element={<PrivateRoute />}>
             <Route path="/bulk-import" element={<BulkImport />} />
