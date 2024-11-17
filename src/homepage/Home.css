@@ -50,3 +50,18 @@
   width: 100%;
   margin-bottom: 20px;
 }
+
+/* Added hover and focus styles */
+.stat-card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+.stat-card:focus {
+  outline: 2px solid #123462;
+  outline-offset: 2px;
+}

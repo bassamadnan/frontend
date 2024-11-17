@@ -51,7 +51,7 @@ function MainListItems() {
         <ListItemIcon>
           <SystemUpdateAltIcon />
         </ListItemIcon>
-        <ListItemText primary="Bulk Import" />
+        <ListItemText primary="Add Nodes" />
       </ListItemButton>
       {/* <ListItemButton onClick={() => handleItemClick('/addvertical')}>
         <ListItemIcon>

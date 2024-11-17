@@ -22,7 +22,6 @@ import { axiosAuthInstance } from '../services/axiosConfig';
 
 function AddAdvanced() {
   const ajv = new Ajv();
-
   const [nodesJson, setNodesJson] = useState('');
   const [importStatus, setImportStatus] = useState({ inProgress: false, message: '' });
   const [modalOpen, setModalOpen] = useState(false);
@@ -30,9 +29,10 @@ function AddAdvanced() {
   const [anchorEl, setAnchorEl] = useState(null);
   const [fileSelected, setFileSelected] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState('');
-
+  
   const fileInputRef = useRef(null);
 
+  // All the existing handlers and schema remain the same
   const handleDownloadClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -41,6 +41,7 @@ function AddAdvanced() {
     setAnchorEl(null);
   };
 
+  // Keep all existing functions the same
   const handleDownloadTemplate = async (type) => {
     try {
       const response = await fetch(`/import-template.${type}`);
@@ -74,30 +75,12 @@ function AddAdvanced() {
           type: 'object',
           required: ['latitude', 'longitude', 'area', 'sensor_type', 'domain', 'name'],
           properties: {
-            latitude: {
-              type: 'number',
-              title: 'Latitude'
-            },
-            longitude: {
-              type: 'number',
-              title: 'Longitude'
-            },
-            area: {
-              type: 'string',
-              title: 'Area'
-            },
-            sensor_type: {
-              type: 'string',
-              title: 'Sensor Name'
-            },
-            domain: {
-              type: 'string',
-              title: 'Domain'
-            },
-            name: {
-              type: 'string',
-              title: 'Name'
-            }
+            latitude: { type: 'number', title: 'Latitude' },
+            longitude: { type: 'number', title: 'Longitude' },
+            area: { type: 'string', title: 'Area' },
+            sensor_type: { type: 'string', title: 'Sensor Name' },
+            domain: { type: 'string', title: 'Domain' },
+            name: { type: 'string', title: 'Name' }
           }
         }
       }
@@ -105,24 +88,20 @@ function AddAdvanced() {
   };
 
   useEffect(() => {
-    // fetching the template file
     async function fetchTemplate() {
       try {
         const res = await fetch('/import-template.json');
         if (!res.ok) {
           throw new Error('Failed to fetch the template');
         }
-        // const data = await res.json();
-        // setNodesJson(JSON.stringify(data, null, 2));
       } catch (error) {
         console.error('error fetching json: ', error);
       }
     }
-
     fetchTemplate();
   }, []);
 
-
+  // Keep all the existing handlers
   const simulateLoadingProgress = (callback) => {
     let progress = 0;
     const interval = setInterval(() => {
@@ -140,21 +119,16 @@ function AddAdvanced() {
     try {
       const fileContent = await file.text();
       const data = JSON.parse(fileContent);
-
-      // validating with schema
       const validate = ajv.compile(nodesSchema);
       const valid = validate(data);
 
       if (valid) {
-        // data is valid
         setNodesJson(JSON.stringify(data, null, 2));
       } else {
-        // data is invalid
         console.error('Invalid JSON data:', validate.errors);
         alert('The JSON data is not in the correct format. Please check and try again.');
       }
     } catch (error) {
-      // Handle parsing and validation errors
       console.error('Error parsing or validating JSON data:', error);
       alert('Error parsing or validating JSON data. Please check and try again.');
     }
@@ -256,8 +230,6 @@ function AddAdvanced() {
     }
     try {
       const data = JSON.parse(nodesJson);
-
-      // Validate the parsed data against the schema
       const validate = ajv.compile(nodesSchema);
       const valid = validate(data);
       if (data?.nodes?.length && data.nodes.length > 5000) {
@@ -273,7 +245,6 @@ function AddAdvanced() {
           axiosAuthInstance
             .post('/import/import', data)
             .then((response) => {
-              console.log('Import response:', response.data);
               const {
                 created_nodes: createdNodes = [],
                 failed_nodes: failedNodes = [],
@@ -300,11 +271,8 @@ function AddAdvanced() {
                 message += '\n';
               }
               if (createdNodes.length > 0) {
-                console.log(createdNodes);
-                message += `Created  nodes:\n`;
+                message += `Created nodes:\n`;
                 createdNodes.forEach((node, index) => {
-                  console.log(index, node);
-
                   message += `${index + 1}. ${node.name}\n`;
                 });
               }
@@ -319,12 +287,10 @@ function AddAdvanced() {
             });
         });
       } else {
-        // Data is invalid according to the schema
         console.error('Invalid JSON data:', validate.errors);
         alert('The JSON data is not in the correct format. Please check and try again.');
       }
     } catch (error) {
-      // Handle parsing errors
       console.error('Error parsing JSON data:', error);
       alert('Invalid JSON format. Please check and try again.');
     }
@@ -341,13 +307,8 @@ function AddAdvanced() {
   };
 
   const buttonStyle = {
-    textTransform: 'none',
-    minWidth: '180px',
-    bgcolor: 'info.main',
-    color: 'white',
-    '&:hover': {
-      bgcolor: 'primary.dark'
-    }
+    height: '48px',
+    borderRadius: '24px'
   };
 
   const modalStyle = {
@@ -366,41 +327,33 @@ function AddAdvanced() {
 
   return (
     <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
-        Bulk Import from file
+      <Typography 
+            variant="subtitle1" 
+            align="center" 
+            gutterBottom 
+            sx={{ 
+              mb: 3,
+              color: 'text.secondary',
+              fontSize: '0.9rem'
+            }}
+          >
+        Import from File
       </Typography>
       <Container maxWidth="lg">
         <Paper elevation={3} sx={{ padding: 3, marginBottom: 3, borderRadius: 2, boxShadow: 3 }}>
-          <Grid container spacing={3} justifyContent="center" sx={{ mb: 4 }}>
-            <Grid item xs={12} sm={6} md={4}>
-              <Tooltip title="Download Template">
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  startIcon={<DownloadIcon />}
-                  endIcon={<ArrowDropDownIcon />}
-                  onClick={handleDownloadClick}
-                  sx={buttonStyle}>
-                  Download Template
-                </Button>
-              </Tooltip>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleDownloadClose}
-              >
-                <MenuItem onClick={() => handleDownloadTemplate('json')}>JSON Template</MenuItem>
-                <MenuItem onClick={() => handleDownloadTemplate('csv')}>CSV Template</MenuItem>
-              </Menu>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+          <Grid container spacing={3} justifyContent="center" alignItems="center" sx={{ mb: 4 }}>
+            {/* Import File Button - First */}
+            <Grid item xs={12} sm={4}>
               <Tooltip title="Import File">
                 <Button
                   fullWidth
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
                   onClick={() => fileInputRef.current.click()}
-                  sx={fileSelected ? "" : buttonStyle}>
+                  sx={{
+                    ...buttonStyle,
+                    backgroundColor: fileSelected ? 'success.light' : 'primary.main'
+                  }}>
                   {fileSelected ? selectedFileName : 'Import File'}
                 </Button>
               </Tooltip>
@@ -412,22 +365,46 @@ function AddAdvanced() {
                 accept=".json,.csv"
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <Tooltip title="Start Bulk Import">
+
+            {/* Start Import Button - Middle */}
+            <Grid item xs={12} sm={4}>
+              <Tooltip title={fileSelected ? "Start Bulk Import" : "Please select a file first"}>
+                <span>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    disabled={!fileSelected || importStatus.inProgress}
+                    onClick={handleBulkImport}
+                    sx={{
+                      ...buttonStyle,
+                      minWidth: '48px',
+                      backgroundColor: fileSelected ? 'primary.main' : 'grey.300'
+                    }}>
+                    <PlayArrowIcon />
+                  </Button>
+                </span>
+              </Tooltip>
+            </Grid>
+
+            {/* Download Template Button - Last */}
+            <Grid item xs={12} sm={4}>
+              <Tooltip title="Download Template">
                 <Button
                   fullWidth
-                  variant="contained"
-                  color="success"
-                  startIcon={<PlayArrowIcon />}
-                  onClick={handleBulkImport}
-                  disabled={importStatus.inProgress}
+                  variant="outlined"
+                  startIcon={<DownloadIcon />}
+                  endIcon={<ArrowDropDownIcon />}
+                  onClick={handleDownloadClick}
                   sx={buttonStyle}>
-                  {importStatus.inProgress ? 'Importing...' : 'Start Bulk Import'}
+                  Download Template
                 </Button>
               </Tooltip>
             </Grid>
           </Grid>
         </Paper>
+
+        {/* Modal */}
         <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
           <Paper sx={modalStyle}>
             {importStatus.inProgress ? (
@@ -460,8 +437,19 @@ function AddAdvanced() {
             </Button>
           </Paper>
         </Modal>
+
+        {/* Template Menu */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleDownloadClose}
+        >
+          <MenuItem onClick={() => handleDownloadTemplate('json')}>JSON Template</MenuItem>
+          <MenuItem onClick={() => handleDownloadTemplate('csv')}>CSV Template</MenuItem>
+        </Menu>
       </Container>
     </Box>
-  );
-}
-export default AddAdvanced;
+    );
+  }
+  
+  export default AddAdvanced;

@@ -257,8 +257,17 @@ const BulkForm = () => {
 
   return (
     <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" gutterBottom sx={{ mb: 4 }}>
-        Bulk Node Form
+      <Typography 
+            variant="subtitle1" 
+            align="center" 
+            gutterBottom 
+            sx={{ 
+              mb: 3,
+              color: 'text.secondary',
+              fontSize: '0.9rem'
+            }}
+          >
+        Add Nodes Manually
       </Typography>
       {nodes.map((node) => (
         <Paper key={node.id} sx={{ padding: 3, marginBottom: 3, borderRadius: 2, boxShadow: 3 }}>
